@@ -1,13 +1,14 @@
 import pygame
-import random
 import time
-
 from cat import Cat
+from game import draw_maze, draw_cat, draw_goal, check_victory, update_visible_zones
+from maze import generate_maze
 
 # Dimensiuni
 SCREEN_SIZE = 600
 GRID_SIZE = 3  # modifica la 2, 3, 4
 CELL_SIZE = SCREEN_SIZE // (GRID_SIZE * GRID_SIZE)
+MAZE_SIZE = GRID_SIZE * GRID_SIZE  # Dimensiunea totala a labirintului
 
 # Culori
 WHITE = (255, 255, 255)
@@ -15,61 +16,6 @@ BLACK = (0, 0, 0)
 BLUE = (0, 0, 255)
 RED = (255, 0, 0)
 GREEN = (0, 255, 0)
-
-
-def generate_maze(grid_size):
-    """Genereaza un labirint folosind Backtracking."""
-    width = height = grid_size * grid_size
-    maze = [[1 for _ in range(width)] for _ in range(height)]
-    stack = []
-    start_x, start_y = width - 1, height - 1  # Start în dreapta jos
-    maze[start_y][start_x] = 0  # Start
-    stack.append((start_x, start_y))
-
-    directions = [(0, 2), (2, 0), (0, -2), (-2, 0)]
-
-    while stack:
-        x, y = stack[-1]
-        random.shuffle(directions)
-        found = False
-
-        for dx, dy in directions:
-            nx, ny = x + dx, y + dy
-            if 0 <= nx < width and 0 <= ny < height and maze[ny][nx] == 1:
-                maze[ny][nx] = 0
-                maze[y + dy // 2][x + dx // 2] = 0
-                stack.append((nx, ny))
-                found = True
-                break
-
-        if not found:
-            stack.pop()
-
-    return maze
-
-
-def draw_maze(screen, maze):
-    """Deseneaza labirintul pe ecran"""
-    for y in range(len(maze)):
-        for x in range(len(maze[y])):
-            color = WHITE if maze[y][x] == 0 else BLACK
-            pygame.draw.rect(screen, color, (x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE))
-
-
-def draw_goal(screen):
-    """Deseneaza punctul de final in coltul stanga sus"""
-    pygame.draw.rect(screen, GREEN, (0, 0, CELL_SIZE, CELL_SIZE))
-
-def draw_cat(screen, cat):
-    """Deseneaza pisica in labirint"""
-    pygame.draw.circle(screen, BLUE, (cat.x * CELL_SIZE + CELL_SIZE // 2, cat.y * CELL_SIZE + CELL_SIZE // 2),
-                       CELL_SIZE // 3)
-
-
-def check_victory(cat):
-    """Verifica daca pisica a ajuns la final"""
-    return cat.x == 0 and cat.y == 0
-
 
 def main():
     pygame.init()
@@ -81,16 +27,19 @@ def main():
     start_x, start_y = len(maze[0]) - 1, len(maze) - 1
     cat = Cat(start_x, start_y)
 
-    # Afiseaza harta timp de 3 secunde
+    visible_zones = set()
+    update_visible_zones(cat, visible_zones)
+
+    # Arata harta hint la inceput
     screen.fill(BLACK)
-    draw_maze(screen, maze)
+    draw_maze(screen, maze, {(x, y) for x in range(GRID_SIZE) for y in range(GRID_SIZE)})
     pygame.display.flip()
     time.sleep(3)
 
     running = True
     while running:
         screen.fill(BLACK)
-        draw_maze(screen, maze)
+        draw_maze(screen, maze, visible_zones)
         draw_goal(screen)
         draw_cat(screen, cat)
         pygame.display.flip()
@@ -107,6 +56,8 @@ def main():
                     cat.move(-1, 0, maze)
                 elif event.key == pygame.K_RIGHT:
                     cat.move(1, 0, maze)
+                update_visible_zones(cat, visible_zones)
+
 
         if check_victory(cat):
             print("Felicitari! Ai ajuns la final!")
