@@ -27,7 +27,17 @@ def main():
     start_x, start_y = len(maze[0]) - 1, len(maze) - 1
     cat = Cat(start_x, start_y)
 
+    # Creeaza mini puzzle uri cu Rects
+    maze_parts = []
+    for y in range(GRID_SIZE):
+        for x in range(GRID_SIZE):
+            maze_parts.append(pygame.Rect(x * CELL_SIZE * GRID_SIZE, y * CELL_SIZE * GRID_SIZE, CELL_SIZE * GRID_SIZE,
+                                          CELL_SIZE * GRID_SIZE))
+
     visible_zones = set()
+
+    revealed_index = 0  # Tracks how many sections are visible
+
     update_visible_zones(cat, visible_zones)
 
     # Arata harta hint la inceput
@@ -39,6 +49,11 @@ def main():
     running = True
     while running:
         screen.fill(BLACK)
+
+        for i in range(revealed_index):
+            grid_x, grid_y = i % GRID_SIZE, i // GRID_SIZE
+            visible_zones.add((grid_x, grid_y))
+
         draw_maze(screen, maze, visible_zones)
         draw_goal(screen)
         draw_cat(screen, cat)

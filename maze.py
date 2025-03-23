@@ -1,6 +1,5 @@
 import random
 
-
 def generate_maze(grid_size):
     """Genereaza un labirint folosind Backtracking"""
     width = height = grid_size * grid_size
@@ -30,3 +29,4 @@ def generate_maze(grid_size):
             stack.pop()
 
     return maze
+

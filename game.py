@@ -42,16 +42,16 @@ def update_visible_zones(cat, visible_zones):
 
     # Adauga zona curenta
     visible_zones.add((grid_x, grid_y))
-
-    # Verifica si arata zonele de langa
-    if cat.x % (MAZE_SIZE // GRID_SIZE) == 0:
-        visible_zones.add((grid_x - 1, grid_y))
-    if cat.y % (MAZE_SIZE // GRID_SIZE) == 0:
-        visible_zones.add((grid_x, grid_y - 1))
-    if cat.x % (MAZE_SIZE // GRID_SIZE) == (MAZE_SIZE // GRID_SIZE) - 1:
-        visible_zones.add((grid_x + 1, grid_y))
-    if cat.y % (MAZE_SIZE // GRID_SIZE) == (MAZE_SIZE // GRID_SIZE) - 1:
-        visible_zones.add((grid_x, grid_y + 1))
+    #
+    #  # Verifica si arata zonele de langa
+    # if cat.x % (MAZE_SIZE // GRID_SIZE) == 0:
+    #     visible_zones.add((grid_x - 1, grid_y))
+    # if cat.y % (MAZE_SIZE // GRID_SIZE) == 0:
+    #     visible_zones.add((grid_x, grid_y - 1))
+    # if cat.x % (MAZE_SIZE // GRID_SIZE) == (MAZE_SIZE // GRID_SIZE) - 1:
+    #     visible_zones.add((grid_x + 1, grid_y))
+    # if cat.y % (MAZE_SIZE // GRID_SIZE) == (MAZE_SIZE // GRID_SIZE) - 1:
+    #     visible_zones.add((grid_x, grid_y + 1))
 
 def check_victory(cat):
     """Verifica daca pisica a ajuns la final"""

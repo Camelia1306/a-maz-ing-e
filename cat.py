@@ -11,4 +11,3 @@ class Cat:
         if 0 <= new_x < len(maze[0]) and 0 <= new_y < len(maze) and maze[new_y][new_x] == 0:
             self.x = new_x
             self.y = new_y
-
